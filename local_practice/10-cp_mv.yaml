@@ -1,0 +1,17 @@
+---
+- name: dependent
+  hosts: local
+  connection: local
+  gather_facts: false
+  vars:
+    dir: production
+    file_name: abc.conf
+  tasks:
+    - name: copying file from one loc to another
+      ansible.builtin.copy:
+        src: ./production/abc.conf
+        dest: abc.conf
+      register: out_put
+    - name: mv files form source to dest
+      ansible.builtin.command:
+        cmd: mv {{ file_name }} {{dir}}/{{file_name}}_20261030

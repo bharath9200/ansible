@@ -1,0 +1,12 @@
+---
+- name: create a file
+  hosts: local
+  connection: local
+  gather_facts: false
+  vars:
+    enviornment: production
+  tasks:
+    - name: create a file
+      ansible.builtin.file:
+        path: ./production
+        state: absent

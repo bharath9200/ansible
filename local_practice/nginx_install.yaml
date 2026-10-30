@@ -1,0 +1,15 @@
+- name: install packages in local hosts
+  hosts: local
+  connection: local
+  become: yes
+  tasks:
+    - name: install the nginx package in localhost
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: yes
+    - name: run the inginx service
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes

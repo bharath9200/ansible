@@ -1,0 +1,24 @@
+---
+- name: dependent
+  hosts: local
+  connection: local
+  gather_facts: false
+  vars:
+    dir: production
+    file_name: abc.conf
+  tasks:
+    - name: create a directory
+      ansible.builtin.file:
+        path: "{{ dir }}"
+        state: directory
+      register: output_value
+    
+    - name: print the value
+      ansible.builtin.debug:
+        var: output_value
+    
+    - name: create a file inside the dir
+      ansible.builtin.file:
+        path: "{{ dir }}/{{ file_name }}"
+        state: touch
+      when: output_value is succeeded

@@ -1,0 +1,22 @@
+---
+- name: print variables from gathtering facts
+  hosts: local
+  connection: local
+  
+  tasks:
+    - name: print the ipv4 private address
+      debug:
+        msg: privateIP " {{ ansible_facts.default_ipv4.address  }} "
+
+    - name: installing all the packages mentioned in vars
+      vars:
+        packages:
+          - git
+          - unzip
+          - zip
+          - nginx
+          - mysql
+      debug:
+        msg: installing {{ item  }}
+      loop: "{{ packages }}"
+      when:  ansible_facts.distribution == "Ubuntu"

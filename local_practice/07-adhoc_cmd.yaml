@@ -1,0 +1,11 @@
+---
+- name: run the adhoc command
+  hosts: local
+  connection: local
+  tasks:
+    - name: run the adhoc commands
+      ansible.builtin.command: ls
+      register: output
+    - name: print the variable
+      ansible.builtin.debug:
+        var: output.stdout_lines

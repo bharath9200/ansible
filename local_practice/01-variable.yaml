@@ -1,0 +1,13 @@
+- name: variables practice
+  hosts: local
+  become: yes
+  connection: local
+  vars:
+    my_name: bharath
+    my_last_name: nellutla
+  tasks:
+    - name: validating the varialbes
+      ansible.builtin.debug:
+        msg: 
+          - "Hello Bharath, How are you"
+          - "Hello {{ my_name }}"

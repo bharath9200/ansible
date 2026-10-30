@@ -1,0 +1,13 @@
+---
+- name: Now iam going to write an anisble code for running the variables
+  hosts: local
+  connection: local
+  become: yes
+  vars_files:
+    - temp.yaml
+  tasks:
+   - name: print the variable from the files
+     ansible.builtin.debug:
+       msg:
+         - "Hello Bharath, Iam learing {{ technology }}"
+         - "I really want to be {{ this }} Engineer"

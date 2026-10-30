@@ -1,0 +1,19 @@
+---
+- name: this is for LOOPS
+  hosts: local
+  connection: local
+  become: yes
+  
+  vars:
+    bharath:
+      - bharath
+      - kumar
+      - nellutla
+  
+  tasks:
+    - name: I would call the loops keyword to iterate
+      ansible.builtin.debug:
+        msg:
+          - Hello {{ item }}
+      loop: "{{ bharath  }}"
+      when: item == "bharath"
