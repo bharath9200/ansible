@@ -89,6 +89,7 @@
     - name: load the data into the table, it should run only once
       ansible.builtin.command:
         cmd: mongosh --host "{{ mongodb_address }}" </app/db/master-data.js
+        chdir: /app
       when: product_count.stdout | int == 0
     - name: restart the service with daemon-reload
       ansible.builtin.service:
