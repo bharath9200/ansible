@@ -32,8 +32,8 @@
       ansible.builtin.file:
         path: /app
         state: directory
-        owner: {{ userid }}
-        group: {{ userid }}
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
     - name: delete catalogue.zip it is used when you execute multiple time
       ansible.builtin.file:
         path: /tmp/catalogue.zip
@@ -47,8 +47,8 @@
       ansible.builtin.unarchive:
         src: /tmp/catalogue.zip
         dest: /app
-        owner: {{ userid }}
-        group: {{ userid }}
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
         remote_src: yes
     - name: build the code
       ansible.builtin.command:
@@ -62,7 +62,7 @@
       ansible.builtin.replace:
         path: /etc/systemd/system/catalogue.service
         regexp: <MONGODB-SERVER-IPADDRESS>
-        replace: {{ mongodb_address }}
+        replace: "{{ mongodb_address }}"
     - name: restart, start and enable the service
       ansible.builtin.service:
         name: catalogue
@@ -83,11 +83,11 @@
       register: product_count
     - name: print the no of products available
       ansible.builtin.debug:
-        msg: {{ product_count }}
+        msg: "{{ product_count }}"
 
     - name: load the data into the table, it should run only once
       ansible.builtin.command:
-        cmd: mongosh --host {{ mongodb_server }} </app/db/master-data.js
+        cmd: mongosh --host "{{ mongodb_server }}" </app/db/master-data.js
       when: product_count.stdout | int == 0
     - name: restart the service with daemon-reload
       ansible.builtin.service:
