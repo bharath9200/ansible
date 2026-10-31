@@ -11,12 +11,13 @@
   tasks:
     - name: create an ec2 instance
       amazon.aws.ec2_instance:
-        name: "{{ instance_name }}"
+        name: "{{ instance_name }}-roboshop"
         instance_type: "{{ instance_type }}"
         image_id: "{{ image_id }}"
         security_group: "{{ security_group }}"
         region: us-east-1
         wait: true
+      register: ec2
     - name: display the instance public and private ip address
       ansible.builtin.debug:
         msg:
