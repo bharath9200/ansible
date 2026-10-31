@@ -6,7 +6,7 @@
   vars:
     instance_name:
       - frontend
-      - catalogue
+      - catalog
       # - cart
       # - user
       # - shipping
