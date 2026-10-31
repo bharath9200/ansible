@@ -31,7 +31,7 @@
       amazon.aws.route53:
         state: present
         zone: "{{ dns_name }}"
-        record: "{{ instance_name }}.{{ dns_name }}"
+        record: "{{ instance_name }}.{{ dns_name }} if instance_name != 'frontend' else {{ dns_name }}"
         type: A
         ttl: 10
         value: "{{ public_ip if instance_name == 'frontend' else private_ip }}"
