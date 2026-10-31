@@ -33,8 +33,8 @@
     - name: display the instance public and private ip address
       ansible.builtin.debug:
         msg:
-          - "public ip address of {{ item }}: {{ ec2.instances[item.item].public_ip_address }}"
-          - "private ip address of {{ item }}: {{ ec2.instances[item.item].private_ip_address }}"
+          - "public ip address of {{ item.item }}: {{ ec2.instances[item.item].public_ip_address }}"
+          - "private ip address of {{ item.item }}: {{ ec2.instances[item.item].private_ip_address }}"
       loop: "{{ instance_name }}"
     
     - name: update the route 53 table with the new instance private and public ip address in hosted zone
