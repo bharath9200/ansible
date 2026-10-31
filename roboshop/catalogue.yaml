@@ -56,7 +56,7 @@
         cmd: npm install
         chdir: /app
     - name: copy the service file to remote
-      ansible.builtin.replace:
+      ansible.builtin.copy:
         src: catalogue.service
         dest: /etc/systemd/system/catalogue.service
     - name: update the systemd service
