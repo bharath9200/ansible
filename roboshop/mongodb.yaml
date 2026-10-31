@@ -18,5 +18,5 @@
     - name: restart mongodb service
       ansible.builtin.service:
         name: mongod
-        state: start
+        state: started
         enabled: true
