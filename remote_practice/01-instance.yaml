@@ -30,7 +30,7 @@
         private_ip: "{{ ec2.instances[0].private_ip_address }}"
       amazon.aws.route53:
         state: present
-        zone: {{ dns_name }}
+        zone: "{{ dns_name }}"
         record: "{{ instance_name }}.{{ dns_name }}"
         type: A
         ttl: 10
