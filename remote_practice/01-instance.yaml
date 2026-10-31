@@ -34,5 +34,5 @@
         record: "{{ instance_name }}.{{ dns_name }}"
         type: A
         ttl: 10
-        value: "{{ 'public_ip' if instance_name == 'frontend' else 'private_ip' }}"
+        value: "{{ public_ip if instance_name == 'frontend' else private_ip }}"
         overwrite: yes  #if the instance name is frontend then update update public ip address else private ip address
