@@ -5,6 +5,10 @@
   vars:
     userid: roboshop
   tasks:
+    - name: Stop running catalogue service
+      ansible.builtin.service:
+        name: catalogue
+        state: stopped
     - name: disable the default package
       ansible.builtin.command:
         cmd: dnf module disable nodejs -y 
