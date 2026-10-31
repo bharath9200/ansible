@@ -22,8 +22,9 @@
         name: "{{ userid }}"
         state: present
         shell: /usr/sbin/nologin
-        create_home: /app
+        create_home: yes
         system: yes
+        home: /app
     - name: delete a folder /app it is used when you execute multiple time
       ansible.builtin.file:
         path: /app
