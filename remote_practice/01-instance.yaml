@@ -33,20 +33,20 @@
     - name: display the instance public and private ip address
       ansible.builtin.debug:
         msg:
-          - "public ip address of {{ item }}: {{ ec2.instances[item.item].public_ip_address }}"
-          - "private ip address of {{ item }}: {{ ec2.instances[item.item].private_ip_address }}"
-      loop: "{{ instance_name }}"
+          - "public ip address of {{ item.item }}: {{ item.instances[0].public_ip_address }}"
+          - "private ip address of {{ item.item }}: {{ item.instances[0].private_ip_address }}"
+      loop: "{{ ec2.results }}"
     
     - name: update the route 53 table with the new instance private and public ip address in hosted zone
       vars:
-        public_ip: "{{ ec2.instances[item.item].public_ip_address }}"
-        private_ip: "{{ ec2.instances[item.item].private_ip_address }}"
+        public_ip: "{{ item.instances[0].public_ip_address }}"
+        private_ip: "{{ item.instances[0].private_ip_address }}"
       amazon.aws.route53:
         state: present
         zone: "{{ dns_name }}"
-        record: "{{ item }}.{{ dns_name }} if item != 'frontend' else {{ dns_name }}"
+        record: "{{ item.item }}.{{ dns_name }} if item.item != 'frontend' else {{ dns_name }}"
         type: A
         ttl: 10
-        value: "{{ public_ip if item.item == 'frontend' else private_ip }}"
+        value: "{{ public_ip if item == 'frontend' else private_ip }}"
         overwrite: yes  #if the instance name is frontend then update update public ip address else private ip address
-      loop: "{{ instance_name }}"
+      loop: "{{ ec2.results }}"

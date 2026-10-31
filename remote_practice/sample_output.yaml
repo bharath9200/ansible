@@ -1,0 +1,11 @@
+ec2:
+  results:
+    - item: frontend
+      instances:
+        - public_ip_address: 54.221.88.62
+          private_ip_address: 172.31.24.213
+
+    - item: catalogue
+      instances:
+        - public_ip_address: 54.221.88.63
+          private_ip_address: 172.31.24.214
