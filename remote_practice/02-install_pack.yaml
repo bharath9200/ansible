@@ -1,0 +1,14 @@
+---
+- name: install the packages in remote volumes
+  hosts: frontend
+  become: yes
+
+  tasks:
+    - name: install the packages
+      ansible.builtin.dnf:
+        name: nginx
+        state: present
+    - name: start the nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: started
