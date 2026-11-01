@@ -9,6 +9,10 @@
       ansible.builtin.service:
         name: cart
         state: stopped
+      when:
+        - "'cart.service' in ansible_facts.services"
+        - ansible_facts.services['cart.service'].state == 'running'
+    
     - name: disable the default package
       ansible.builtin.command:
         cmd: dnf module disable nodejs -y 
