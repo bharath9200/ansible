@@ -22,13 +22,11 @@
         path: /etc/redis/redis.conf
         regexp: "127.0.0.1"
         replace: "0.0.0.0"
-        remote_src: yes
     - name: replace the content from the default configuration
       ansible.builtin.replace:
         path: /etc/redis/redis.conf
         regexp: "protected-mode yes"
         replace: "protected-mode no"
-        remote_src: yes
     - name: daemon reload, start and enable the redis service
       ansible.builtin.service:
         name: redis
