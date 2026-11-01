@@ -40,6 +40,6 @@ all:
         shipping:
         payment:
         redis:
-    frontend:
+    frontend_ip:
       hosts:
         frontend:
