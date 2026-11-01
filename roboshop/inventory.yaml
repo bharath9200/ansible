@@ -3,7 +3,7 @@ all:
     mongodb:
       ansible_host: 172.31.14.142
     catalogue:
-      ansible_host: 172.31.4.93
+      ansible_host: 172.31.9.19
     user:
       ansible_host: 172.31.4.13
     cart:
