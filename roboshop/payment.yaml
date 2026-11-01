@@ -63,6 +63,7 @@
     - name: install the dependencies
       ansible.builtin.shell:
         cmd: /app/.venv/bin/pip install -r requirements.txt
+        chdir: /app
     - name: copy the service file from local to remote
       ansible.builtin.copy:
         src: payment.service
