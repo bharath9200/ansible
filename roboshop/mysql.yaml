@@ -11,11 +11,16 @@
       debug:
         var: ansible_facts.services
 
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
     - name: Stop running mysql service
       ansible.builtin.systemd:
         name: mysqld
         state: stopped
-      when: ansible_facts.services['mysqld.service'].state == 'running'
+      when:
+        - "'mysqld.service' in ansible_facts.services"
+        - ansible_facts.services['mysqld.service'].state == 'running'
 
     - name: enable the default package
       ansible.builtin.command:
