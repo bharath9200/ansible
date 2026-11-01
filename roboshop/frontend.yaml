@@ -7,7 +7,7 @@
   tasks:
     - name: Gather service facts
       ansible.builtin.service_facts:
-      
+
     - name: Stop running frontend service
       ansible.builtin.service:
         name: nginx
@@ -52,23 +52,9 @@
         dest: /etc/nginx/default.d/roboshop.conf
         mode: "0644"
 
-    - name: create a system user
-      ansible.builtin.user:
-        name: "{{ userid }}"
-        state: present
-        shell: /usr/sbin/nologin
-        create_home: yes
-        system: yes
-        home: /app
-    - name: delete a folder /app it is used when you execute multiple time
-      ansible.builtin.file:
-        path: /app
-        state: absent
-    - name: create a folder /app
-      ansible.builtin.file:
-        path: /app
-        state: directory
-        owner: "{{ userid }}"
-        group: "{{ userid }}"
-    - name: delete catalogue.zip it is used when you execute multiple time
-      ansible.builtin.file:
+    - name: daemon reload and restart the nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes
+        daemon_reload: yes
