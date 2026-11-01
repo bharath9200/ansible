@@ -7,7 +7,10 @@
   tasks:
     - name: Gather service facts
       ansible.builtin.service_facts:
-      
+    - name: print the variable
+      debug:
+        var: ansible_facts.services
+
     - name: Stop running mysql service
       ansible.builtin.systemd:
         name: mysqld
