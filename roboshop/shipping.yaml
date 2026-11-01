@@ -47,7 +47,7 @@
 
     - name: Verify Maven version
       ansible.builtin.command:
-      cmd: mvn -v
+        cmd: mvn -v
       register: maven_version
       changed_when: false
     
