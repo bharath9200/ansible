@@ -1,0 +1,68 @@
+---
+- name: frontend component configuration
+  hosts: frontend
+  become: yes
+  vars: 
+    userid: roboshop
+  tasks:
+    tasks:
+    - name: Stop running frontend service
+      ansible.builtin.service:
+        name: nginx
+        state: stopped
+    - name: disable the default package
+      ansible.builtin.command:
+        cmd: dnf module disable nginx -y
+
+    - name: enable the default package with version 1.26
+      ansible.builtin.command:
+        cmd: dnf module enable nginx:1.26 -y
+
+    - name: install the nodejs 24 package
+      ansible.builtin.dnf:
+        name: nginx
+        state: present
+    - name: delete the default config file 
+      ansible.builtin.file:
+        path: /usr/share/nginx/html/
+        state: absent
+
+    - name: get the source code from the git
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/frontend-v4.zip
+        dest: /temp/frontend.zip
+        mode: '0644'
+    - name: unzip the contents
+      ansible.builtin.unarchive:
+        src: /tmp/frontend.zip
+        dest: /usr/share/nginx/html
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        remote_src: yes
+
+    - name: copy the configuration file
+      ansible.builtin.template:
+        src: roboshop.conf
+        dest: /etc/nginx/default.d/roboshop.conf
+        mode: "0644"
+
+    - name: create a system user
+      ansible.builtin.user:
+        name: "{{ userid }}"
+        state: present
+        shell: /usr/sbin/nologin
+        create_home: yes
+        system: yes
+        home: /app
+    - name: delete a folder /app it is used when you execute multiple time
+      ansible.builtin.file:
+        path: /app
+        state: absent
+    - name: create a folder /app
+      ansible.builtin.file:
+        path: /app
+        state: directory
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+    - name: delete catalogue.zip it is used when you execute multiple time
+      ansible.builtin.file:

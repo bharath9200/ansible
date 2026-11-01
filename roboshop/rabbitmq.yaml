@@ -1,0 +1,26 @@
+---
+- name: rabbitmq configuration 
+  hosts: rabbitmq
+  become: yes
+  tasks:
+    - name: copy the rabbit mq repo file to remote server
+      ansible.builtin.copy:
+        src: rabbitmq.repo
+        dest: /etc/yum.repos.d/rabbitmq.repo
+    - name: install rabbitmq packages
+      ansible.builtin.dnf:
+        name:
+          - erlang
+          - rabbitmq-server
+        state: present
+    - name: start and enable the service
+      ansible.builtin.service:
+        name: rabbitmq-server
+        state: started
+        enabled: yes
+    - name: create the roboshop user for rabbitmq server
+      ansible.builtin.command:
+        cmd:  "rabbitmqctl add_user roboshop roboshop123"
+    - name: create the roboshop user for rabbitmq server
+      ansible.builtin.command:
+        cmd:  'rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"'

@@ -1,0 +1,115 @@
+---
+- name: shipping module configuration
+  hosts: shipping
+  become: yes
+  vars: 
+    userid: roboshop
+  tasks:
+    - name: Stop running shipping service
+      ansible.builtin.service:
+        name: shipping
+        state: stopped
+    - name: enable maven package
+      ansible.builtin.command:
+        cmd: dnf module enable maven:3.9 -y
+
+    - name: install maven and jdk packages
+      ansible.builtin.dnf:
+        name:
+         - maven
+         - java-25-openjdk-devel
+         - maven-openjdk25 # no need to update the java home path for jdk 25
+         - mysql
+    - name: create a system user
+      ansible.builtin.user:
+        name: "{{ userid }}"
+        state: present
+        shell: /usr/sbin/nologin
+        create_home: yes
+        system: yes
+        home: /app
+    - name: Verify Java version
+      ansible.builtin.command:
+        cmd: java -version
+        register: java_version
+        changed_when: false
+
+    - name: Display Java version
+      ansible.builtin.debug:
+      var: java_version.stderr
+
+    - name: Verify Maven version
+      ansible.builtin.command:
+      cmd: mvn -v
+      register: maven_version
+      changed_when: false
+    
+    - name: delete a folder /app it is used when you execute multiple time
+      ansible.builtin.file:
+        path: /app
+        state: absent
+    - name: create a folder /app
+      ansible.builtin.file:
+        path: /app
+        state: directory
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+    - name: delete shipping.zip it is used when you execute multiple time
+      ansible.builtin.file:
+        path: /tmp/shipping.zip
+        state: absent
+    - name: get the source code from the git
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/shipping-v4.zip
+        dest: /tmp/shipping.zip
+    - name: extract the zip
+      ansible.builtin.unarchive:
+        src: /tmp/shipping.zip
+        dest: /app
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        remote_src: yes
+    - name: build the code
+      ansible.builtin.command:
+        cmd: mvn clean package
+        chdir: /app
+    - name: move the files from source to destination
+      ansible.builtin.shell:
+        cmd: mv target/shipping.jar shipping.jar
+        chdir: /app
+    - name: load the schema to mysql server
+      ansible.builtin.shell:
+        cmd: " mysql -h {{ mysql_address }} -uroot -pRoboShop@1 < /app/db/master-data.sql "
+        chdir: /app
+    - name: load the schema to mysql server
+      ansible.builtin.shell:
+        cmd: " mysql -h {{ mysql_address }} -uroot -pRoboShop@1 < /app/db/app-user.sql "
+        chdir: /app
+    
+    - name: copy the service to remote location
+      ansible.builtin.copy:
+        src: shipping.service
+        dest: /etc/systemd/system/shipping.service
+    - name: replace cart and mysql service in the cart.service
+      ansible.builtin.replace:
+        path: /etc/systemd/system/shipping.service
+        regexp: "<CART-SERVER-IPADDRESS>"
+        replace: "{{ cart_address }}"
+    - name: replace redis and catalog service in the cart.service
+      ansible.builtin.replace:
+        path: /etc/systemd/system/shipping.service
+        regexp: "<MYSQL-SERVER-IPADDRESS>"
+        replace: "{{ mysql_address }}"
+    - name: daemon reload, start and enable the user service
+      ansible.builtin.service:
+        name: shipping
+        state: started
+        enabled: yes
+        daemon_reload: yes
+
+
+
+
+
+        
+    

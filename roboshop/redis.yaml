@@ -1,0 +1,37 @@
+---
+- name: redis component configuration
+  hosts: redis
+  become: yes
+  vars: 
+    userid: roboshop
+  tasks:
+    - name: disable the default package
+      ansible.builtin.command:
+        cmd: dnf module disable redis -y
+
+    - name: enable the default package with version 7
+      ansible.builtin.command:
+        cmd: dnf module enable redis:7 -y
+
+    - name: install the redis  package
+      ansible.builtin.dnf:
+        name: redis
+        state: present
+    - name: replace the content from the default configuration
+      ansible.builtin.replace:
+        path: /etc/redis/redis.conf
+        regexp: "127.0.0.1"
+        replace: "0.0.0.0"
+        remote_src: yes
+    - name: replace the content from the default configuration
+      ansible.builtin.replace:
+        path: /etc/redis/redis.conf
+        regexp: "protected-mode yes"
+        replace: "protected-mode no"
+        remote_src: yes
+    - name: daemon reload, start and enable the redis service
+      ansible.builtin.service:
+        name: redis
+        state: started
+        enabled: yes
+        daemon_reload: yes

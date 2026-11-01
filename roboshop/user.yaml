@@ -1,0 +1,83 @@
+---
+- name: user component configuration
+  hosts: user
+  become: yes
+  vars: 
+    userid: roboshop
+  tasks:
+    tasks:
+    - name: Stop running catalogue service
+      ansible.builtin.service:
+        name: catalogue
+        state: stopped
+    - name: disable the default package
+      ansible.builtin.command:
+        cmd: dnf module disable nodejs -y 
+
+    - name: enable the default package with version 24
+      ansible.builtin.command:
+        cmd: dnf module enable nodejs:24 -y
+
+    - name: install the nodejs 24 package
+      ansible.builtin.dnf:
+        name: nodejs
+        state: present
+    - name: create a system user
+      ansible.builtin.user:
+        name: "{{ userid }}"
+        state: present
+        shell: /usr/sbin/nologin
+        create_home: yes
+        system: yes
+        home: /app
+    - name: delete a folder /app it is used when you execute multiple time
+      ansible.builtin.file:
+        path: /app
+        state: absent
+    - name: create a folder /app
+      ansible.builtin.file:
+        path: /app
+        state: directory
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+    - name: delete catalogue.zip it is used when you execute multiple time
+      ansible.builtin.file:
+        path: /tmp/catalogue.zip
+        state: absent
+    - name: get the source code from the git
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/user-v4.zip
+        dest: /temp/user.zip
+        mode: '0644'
+    - name: unzip the contents
+      ansible.builtin.unarchive:
+        src: /tmp/user.zip
+        dest: /app
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        remote_src: yes
+    - name: build the code
+      ansible.builtin.command:
+        cmd: npm install
+        chdir: /app
+    - name: copy the service file from local to remote
+      ansible.builtin.copy:
+        src: user.service
+        dest: /etc/systemd/system/user.service
+    - name: replace the redis and mongodb hosts in the service file
+      ansible.builtin.replace:
+        path: /etc/systemd/system/user.service
+        regexp: "<REDIS-SERVER-IPADDRESS>"
+        replace: "{{ redis_address }}"
+    - name: replace the redis and mongodb hosts in the service file
+      ansible.builtin.replace:
+        path: /etc/systemd/system/user.service
+        regexp: "<MONGODB-SERVER-IPADDRESS>"
+        replace: "{{ mongodb_address }}"
+    - name: daemon reload, start and enable the user service
+      ansible.builtin.service:
+        name: user
+        state: started
+        enabled: yes
+        daemon_reload: yes
+        

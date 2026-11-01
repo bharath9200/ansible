@@ -1,0 +1,85 @@
+---
+- name: payment component configuration
+  hosts: payment
+  become: yes
+  vars: 
+    userid: roboshop
+  tasks:
+    tasks:
+    - name: Stop running payment service
+      ansible.builtin.service:
+        name: payment
+        state: stopped
+    - name: install the python  packages
+      ansible.builtin.dnf:
+        name: 
+         - python3.14
+         - python3.14-pip
+        state: present
+    - name: create a system user
+      ansible.builtin.user:
+        name: "{{ userid }}"
+        state: present
+        shell: /usr/sbin/nologin
+        create_home: yes
+        system: yes
+        home: /app
+    - name: delete a folder /app it is used when you execute multiple time
+      ansible.builtin.file:
+        path: /app
+        state: absent
+    - name: create a folder /app
+      ansible.builtin.file:
+        path: /app
+        state: directory
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+    - name: delete catalogue.zip it is used when you execute multiple time
+      ansible.builtin.file:
+        path: /tmp/catalogue.zip
+        state: absent
+    - name: get the souce code from git
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/payment-v4.zip
+        dest: /tmp/payment.zip
+        mode: "0644"
+    - name: unzip the contents
+      ansible.builtin.unarchive:
+        src: /tmp/payment.zip
+        dest: /app
+        owner: "{{ userid }}"
+        group: "{{ userid }}"
+        remote_src: yes
+    - name: execute the python shell commands
+      ansible.builtin.shell:
+        cmd: python3.14 -m venv /app/.venv
+        chdir: /app
+    - name: install the dependencies
+      ansible.builtin.shell:
+        cmd: /app/.venv/bin/pip install -r requirements.txt
+    - name: copy the service file from local to remote
+      ansible.builtin.copy:
+        src: payment.service
+        dest: /etc/systemd/system/payment.service
+    - name: replace the cart and user and rabbitmq hosts in the service file
+      ansible.builtin.replace:
+        path: /etc/systemd/system/payment.service
+        regexp: "<CART-SERVER-IPADDRESS>"
+        replace: "{{ cart_address }}"
+    - name: replace the cart and user and rabbitmq hosts in the service file
+      ansible.builtin.replace:
+        path: /etc/systemd/system/payment.service
+        regexp: "<USER-SERVER-IPADDRESS>"
+        replace: "{{ user_address }}"
+    - name: replace the cart and user and rabbitmq hosts in the service file
+      ansible.builtin.replace:
+        path: /etc/systemd/system/payment.service
+        regexp: "<RABBITMQ-SERVER-IPADDRESS>"
+        replace: "{{ rabbitmq_address }}"
+    - name: daemon reload, start and enable the payment service
+      ansible.builtin.service:
+        name: payment
+        state: started
+        enabled: yes
+        daemon_reload: yes
+        
