@@ -2,8 +2,6 @@
 - name: frontend component configuration
   hosts: frontend
   become: yes
-  vars: 
-    userid: roboshop
   tasks:
     # - name: Gather service facts
     #   ansible.builtin.service_facts:
@@ -38,8 +36,6 @@
       ansible.builtin.unarchive:
         src: /tmp/frontend.zip
         dest: /usr/share/nginx/html/
-        owner: "{{ userid }}"
-        group: "{{ userid }}"
         remote_src: yes
 
     - name: copy the configuration file
