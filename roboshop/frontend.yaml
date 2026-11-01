@@ -5,16 +5,16 @@
   vars: 
     userid: roboshop
   tasks:
-    - name: Gather service facts
-      ansible.builtin.service_facts:
+    # - name: Gather service facts
+    #   ansible.builtin.service_facts:
 
-    - name: Stop running frontend service
-      ansible.builtin.service:
-        name: nginx
-        state: stopped
-      when:
-        - "'nginx.service' in ansible_facts.services"
-        - ansible_facts.services['nginx.service'].state == 'running'
+    # - name: Stop running frontend service
+    #   ansible.builtin.service:
+    #     name: nginx
+    #     state: stopped
+    #   when:
+    #     - "'nginx.service' in ansible_facts.services"
+    #     - ansible_facts.services['nginx.service'].state == 'running'
 
     - name: disable the default package
       ansible.builtin.command:
@@ -24,14 +24,10 @@
       ansible.builtin.command:
         cmd: dnf module enable nginx:1.26 -y
 
-    - name: install the nginx  24 package
+    - name: install the nginx package
       ansible.builtin.dnf:
         name: nginx
         state: present
-    - name: delete the default config file 
-      ansible.builtin.file:
-        path: /usr/share/nginx/html/
-        state: absent
 
     - name: get the source code from the git
       ansible.builtin.get_url:
