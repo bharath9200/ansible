@@ -43,7 +43,7 @@
 
     - name: Display Java version
       ansible.builtin.debug:
-      var: java_version.stderr
+        var: java_version.stderr
 
     - name: Verify Maven version
       ansible.builtin.command:
