@@ -53,7 +53,7 @@
     - name: get the source code from the git
       ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/user-v4.zip
-        dest: /temp/user.zip
+        dest: /tmp/user.zip
         mode: '0644'
     - name: unzip the contents
       ansible.builtin.unarchive:
