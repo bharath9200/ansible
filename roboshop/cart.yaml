@@ -5,6 +5,8 @@
   vars: 
     userid: roboshop
   tasks:
+    - name: gather system service fact details
+      ansible.builtin.service_facts:
     - name: Stop running cart service
       ansible.builtin.service:
         name: cart
