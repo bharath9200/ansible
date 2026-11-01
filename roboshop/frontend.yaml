@@ -5,11 +5,17 @@
   vars: 
     userid: roboshop
   tasks:
-    tasks:
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+      
     - name: Stop running frontend service
       ansible.builtin.service:
         name: nginx
         state: stopped
+      when:
+        - "'nginx.service' in ansible_facts.services"
+        - ansible_facts.services['nginx.service'].state == 'running'
+
     - name: disable the default package
       ansible.builtin.command:
         cmd: dnf module disable nginx -y
