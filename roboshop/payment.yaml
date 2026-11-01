@@ -59,7 +59,7 @@
       ansible.builtin.shell:
         cmd: python3.14 -m venv /app/.venv
         chdir: /app
-      become: "{{ userid }}"
+      become_user: "{{ userid }}"
     - name: install the dependencies
       ansible.builtin.shell:
         cmd: /app/.venv/bin/pip install -r requirements.txt
