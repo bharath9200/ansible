@@ -6,12 +6,12 @@
     userid: roboshop
   tasks:
     - name: Stop running mysql service
-        ansible.builtin.service:
-          name: mysqld
-          state: stopped
-          when:
-            - "'mysqld.service' in ansible_facts.services"
-            - ansible_facts.services['mysqld.service'].state == 'running'
+      ansible.builtin.service:
+        name: mysqld
+        state: stopped
+        when:
+          - "'mysqld.service' in ansible_facts.services"
+          - ansible_facts.services['mysqld.service'].state == 'running'
       
     - name: enable the default package
       ansible.builtin.command:
