@@ -5,11 +5,16 @@
   vars: 
     userid: roboshop
   tasks:
-    tasks:
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
     - name: Stop running payment service
       ansible.builtin.service:
         name: payment
         state: stopped
+      when:
+        - "'payment.service' in ansible_facts.services"
+        - ansible_facts.services['payment.service'].state == 'running'
     - name: install the python  packages
       ansible.builtin.dnf:
         name: 

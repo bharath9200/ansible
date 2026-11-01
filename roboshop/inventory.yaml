@@ -5,7 +5,7 @@ all:
     catalogue:
       ansible_host: 172.31.9.19
     user:
-      ansible_host: 172.31.4.13
+      ansible_host: 172.31.5.70
     cart:
       ansible_host: 172.31.4.14
     shipping:

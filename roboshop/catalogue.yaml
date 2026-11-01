@@ -90,7 +90,7 @@
         name: mongodb-mongosh
         state: present
     - name: check the products count
-      ansible.builtin.command:
+      ansible.builtin.shell:
         cmd: mongosh --host {{ mongodb_address }} --quiet --eval 'db.getSiblingDB("catalogue").products.countDocuments()'
       register: product_count
     - name: print the no of products available

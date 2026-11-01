@@ -5,10 +5,17 @@
   vars: 
     userid: roboshop
   tasks:
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
     - name: Stop running shipping service
       ansible.builtin.service:
         name: shipping
         state: stopped
+      when:
+        - "'shipping.service' in ansible_facts.services"
+        - ansible_facts.services['shipping.service'].state == 'running'
+
     - name: enable maven package
       ansible.builtin.command:
         cmd: dnf module enable maven:3.9 -y
