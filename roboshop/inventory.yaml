@@ -9,7 +9,7 @@ all:
     cart:
       ansible_host: 172.31.12.207
     shipping:
-      ansible_host: 172.31.4.15
+      ansible_host: 172.31.14.105
     payment:
       ansible_host: 172.31.4.16
     frontend:
