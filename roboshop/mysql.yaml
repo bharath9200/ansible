@@ -5,6 +5,9 @@
   vars: 
     userid: roboshop
   tasks:
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+      
     - name: Stop running mysql service
       ansible.builtin.systemd:
         name: mysqld
