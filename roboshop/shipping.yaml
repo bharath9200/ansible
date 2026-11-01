@@ -38,8 +38,8 @@
     - name: Verify Java version
       ansible.builtin.command:
         cmd: "java -version"
-        register: java_version
-        changed_when: false
+      register: java_version
+      changed_when: false
 
     - name: Display Java version
       ansible.builtin.debug:
