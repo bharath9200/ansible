@@ -24,7 +24,7 @@
       ansible.builtin.command:
         cmd: dnf module enable nginx:1.26 -y
 
-    - name: install the nodejs 24 package
+    - name: install the nginx  24 package
       ansible.builtin.dnf:
         name: nginx
         state: present
@@ -36,7 +36,7 @@
     - name: get the source code from the git
       ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/frontend-v4.zip
-        dest: /temp/frontend.zip
+        dest: /tmp/frontend.zip
         mode: '0644'
     - name: unzip the contents
       ansible.builtin.unarchive:
