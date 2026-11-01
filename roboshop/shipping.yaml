@@ -37,7 +37,7 @@
         home: /app
     - name: Verify Java version
       ansible.builtin.command:
-        cmd: java -version
+        cmd: "java -version"
         register: java_version
         changed_when: false
 
