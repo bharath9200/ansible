@@ -7,7 +7,7 @@ all:
     user:
       ansible_host: 172.31.5.70
     cart:
-      ansible_host: 172.31.4.14
+      ansible_host: 172.31.12.207
     shipping:
       ansible_host: 172.31.4.15
     payment:
